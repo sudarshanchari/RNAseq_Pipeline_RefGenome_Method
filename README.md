@@ -1,4 +1,4 @@
-RNAseq_Pipeline_RefGenome_Method
+RNAseq_Pipeline_Reference_Method
 ================================
 This Repository contains scripts for analyzing pooled RNA-seq data via 
 - mapping to a reference transcriptome or genome using TopHat2, STAR, HISAT2 and Salmon (bash scripts calling the relevant mappers)
