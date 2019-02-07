@@ -7,6 +7,9 @@ This Repository contains scripts for analyzing pooled RNA-seq data via
 
 - custom plotting including base R,ggplot2 and pheatmap
 
-Demultiplexing using Fastq-multx:
----------------------------------
-Typically samples of ngs are multiplexed prior to sequencing and depending on the sequencing core/ service (academic or commercial)
+### Demultiplexing using Fastq-multx:
+NGS samples may be multiplexed prior to sequencing and depending on the sequencing core/ service (academic or commercial), you may get back the raw reads per sample or you may have to demultiplex this yourself. There are several tools for demultiplexing for example Barcode splitter included in the FASTX-Toolkit (http://hannonlab.cshl.edu/fastx_toolkit/commandline.html#fastx_barcode_splitter_usage)
+
+But for this (and other) project(s) I have used fastq-multx (Erik Aronesty (2013). TOBioiJ : "Comparison of Sequencing Utility Programs", DOI:10.2174/1875036201307010001) and can be obtained installed via conda.
+
+
