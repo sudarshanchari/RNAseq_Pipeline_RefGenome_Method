@@ -7,3 +7,6 @@ This Repository contains scripts for analyzing pooled RNA-seq data via
 
 - custom plotting including base R,ggplot2 and pheatmap
 
+Demultiplexing using Fastq-multx:
+---------------------------------
+Typically samples of ngs are multiplexed prior to sequencing and depending on the sequencing core/ service (academic or commercial)
