@@ -13,7 +13,7 @@ This Repository contains scripts and a walk-through for analyzing pooled (single
 ## Demultiplexing using Fastq-multx:
 NGS samples may be multiplexed prior to sequencing and depending on the sequencing core/ service (academic or commercial), you may get back the raw reads per sample or you may have to demultiplex this yourself. There are several tools for demultiplexing for example Barcode splitter included in the FASTX-Toolkit (http://hannonlab.cshl.edu/fastx_toolkit/commandline.html#fastx_barcode_splitter_usage)
 
-But for this (and other) project(s) I have used fastq-multx (Erik Aronesty (2013). TOBioiJ : "Comparison of Sequencing Utility Programs", DOI:10.2174/1875036201307010001) and can be obtained installed via (bio)conda. 
+But for this (and other) project(s) I have used fastq-multx (Erik Aronesty (2013). TOBioiJ : "Comparison of Sequencing Utility Programs", DOI:10.2174/1875036201307010001) and can be obtained installed via (bio)conda. And for a small pilot dataset I haven't seen a qualitative difference between the two programs in terms of output and final result.
 
 ```
 cd /scratch/src/RNAseq/raw/
@@ -26,7 +26,9 @@ fastq-multx -l Barcodes.txt Index1.fastq.gz Index2.fastq.gz Read1.fastq.gz Read2
 
 # The -l: Determine barcodes from any read, using BCFIL as a master list
 # Use fastq-multx --help to check out other functionalities and their usage
-# Tip: If, for dual-indexed reads, the demultiplexing looks wonky and you've done everything right, just try changing the order of the Index files.
+# Tip1: If, for dual-indexed reads, the demultiplexing looks wonky and you've done everything right, try changing the order of the Index files. 
+# Tip2: In the Barcodes.txt file you can provide a unique identifier for each index so that when split, the file names reflect this unique Id. I like to give it the form "UniqueId_Rep#_Run#_Lane#"
 
 ```
-Now you should have all the samples.
+## Adapter trimming
+Once the samples have been split into files with a name "UniqueId_Rep_Run_Lane.fastq.gz", the step is to perform adapter trimming
