@@ -7,9 +7,6 @@ This Repository contains scripts and a walk-through for analyzing pooled (single
 
 - custom plotting including base R,ggplot2 and pheatmap
 
-## Environment
-- I like doing much of the sequencing related projects in a conda environment (https://conda.io/projects/conda/en/latest/user-guide/getting-started.html). This is really useful especially on university HPCs (and everywhere else really!) for reasons... (ok fine you can see https://medium.freecodecamp.org/why-you-need-python-environments-and-how-to-manage-them-with-conda-85f155f4353c)
-
 ## Demultiplexing using Fastq-multx:
 NGS samples may be multiplexed prior to sequencing and depending on the sequencing core/ service (academic or commercial), you may get back the raw reads per sample or you may have to demultiplex this yourself. There are several tools for demultiplexing for example Barcode splitter included in the FASTX-Toolkit (http://hannonlab.cshl.edu/fastx_toolkit/commandline.html#fastx_barcode_splitter_usage)
 
@@ -31,4 +28,16 @@ fastq-multx -l Barcodes.txt Index1.fastq.gz Index2.fastq.gz Read1.fastq.gz Read2
 
 ```
 ## Adapter trimming
-Once the samples have been split into files with a name "UniqueId_Rep_Run_Lane.fastq.gz", the step is to perform adapter trimming
+Once the samples have been split into files with a name "UniqueId_Rep_Run_Lane.fastq.gz", the step is to perform adapter trimming. I have extensively used Trimmomatic (http://www.usadellab.org/cms/?page=trimmomatic) and Trim Galore (https://www.bioinformatics.babraham.ac.uk/projects/trim_galore/). Both of these tools are easy to use and once again for a simple case, I haven't seen a qualitative difference between the two. For this project I have used Trim Galore
+
+```
+cd /scratch/src/RNAseq/raw/
+
+# For single end reads
+trim_galore filename.fastq.gz -o /scratch/src/RNAseq/Trimd_data/
+
+# For paired end reads
+trim_galore --paired filename_Read1.fastq.gz filename_Read2.fastq.gz -o /scratch/src/RNAseq/Trimd_data/
+
+```
+
