@@ -36,10 +36,12 @@ Once the samples have been split into files with a name "UniqueId_Rep_Run_Lane.f
 # conda install trim-galore
 
 # For single end reads
-trim_galore filename.fastq.gz -o /scratch/src/RNAseq/Trimd_data/
+trim_galore filename.fastq.gz -o folder_name
 
 # For paired end reads
-trim_galore --paired filename_Read1.fastq.gz filename_Read2.fastq.gz -o /scratch/src/RNAseq/Trimd_data/
+trim_galore --paired filename_Read1.fastq.gz filename_Read2.fastq.gz -o folder_name
+
+# TrimGalore automatically prints out filename within the output folder based on the input filename
 
 ```
 ## Mapping and quantification
