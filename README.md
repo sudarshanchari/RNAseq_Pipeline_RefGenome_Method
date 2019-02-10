@@ -65,3 +65,9 @@ salmon quant -i dmel-all-transcript-r6.19_salmon.index -l A -r filename_trimmed.
 # -p 6: multi-threading on 6 cores
 
 ```
+If you have used ERCC spike-ins then you can obtain the spike-in sequences (https://assets.thermofisher.com/TFS-Assets/LSG/manuals/ERCC92.zip) and add it to the transcriptome prior to indexing.
+
+```
+cat dmel-all-transcript-r6.19.fasta ERCC92.fasta > dmel-all-transcript-r6.19_ERCC.fasta
+
+```
