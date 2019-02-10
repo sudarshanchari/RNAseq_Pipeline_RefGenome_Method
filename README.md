@@ -45,7 +45,7 @@ trim_galore --paired filename_Read1.fastq.gz filename_Read2.fastq.gz -o folder_n
 
 ```
 ## Mapping and quantification
-The main objective of this project was to perform a DE analysis between different conditions for known genes and so I used Salmon to perform quantification that can then be used downstream.
+The main objective of this project was to perform a DE analysis between different conditions for known genes and so I used Salmon (mostly default options) to perform quantification that can then be used downstream.
 
 ```
 # source activate ngs
