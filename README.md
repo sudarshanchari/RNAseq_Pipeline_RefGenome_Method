@@ -1,9 +1,9 @@
 RNAseq_Pipeline_Reference_Method
 ================================
-This Repository contains scripts and a walk-through for analyzing pooled (single-end) RNA-seq data via 
+This Repository contains scripts and a walk-through for analyzing pooled (single-end) RNA-seq performed on Drosophila melanogaster whole embryos with and without specific defects via 
 - mapping to a reference transcriptome using Salmon (slurm/bash scripts calling the relevant functions to preprocess and map)
 
-- performing differential gene expression analysis of single stage and time-series RNA-seq data that also touches upon p-value combination for multiple time-points (R workflow using Bioconductor packages)
+- performing differential gene expression (DE) analysis of single stage and time-series RNA-seq data that also touches upon p-value combination for multiple time-points (R workflow using Bioconductor packages)
 
 - custom plotting including base R,ggplot2 and pheatmap
 
@@ -13,7 +13,8 @@ NGS samples may be multiplexed prior to sequencing and depending on the sequenci
 But for this (and other) project(s) I have used fastq-multx (Erik Aronesty (2013). TOBioiJ : "Comparison of Sequencing Utility Programs", DOI:10.2174/1875036201307010001) and can be obtained installed via (bio)conda. And for a small pilot dataset I haven't seen a qualitative difference between the two programs in terms of output and final result.
 
 ```
-cd /scratch/src/RNAseq/raw/
+# source activate ngs
+# conda install fastq-multx
 
 # for single-end reads the usage is something like this
 fastq-multx -l Barcodes.txt Index.fastq.gz Reads.fastq.gz -o n/a -o %.Read1.fastq.gz 
@@ -31,7 +32,8 @@ fastq-multx -l Barcodes.txt Index1.fastq.gz Index2.fastq.gz Read1.fastq.gz Read2
 Once the samples have been split into files with a name "UniqueId_Rep_Run_Lane.fastq.gz", the step is to perform adapter trimming. I have extensively used Trimmomatic (http://www.usadellab.org/cms/?page=trimmomatic) and Trim Galore (https://www.bioinformatics.babraham.ac.uk/projects/trim_galore/). Both of these tools are easy to use and once again for a simple case, I haven't seen a qualitative difference between the two. For this project I have used Trim Galore
 
 ```
-cd /scratch/src/RNAseq/raw/
+# source activate ngs
+# conda install trim-galore
 
 # For single end reads
 trim_galore filename.fastq.gz -o /scratch/src/RNAseq/Trimd_data/
@@ -40,4 +42,24 @@ trim_galore filename.fastq.gz -o /scratch/src/RNAseq/Trimd_data/
 trim_galore --paired filename_Read1.fastq.gz filename_Read2.fastq.gz -o /scratch/src/RNAseq/Trimd_data/
 
 ```
+## Mapping and quantification
+The main objective of this project was to perform a DE analysis between different conditions for known genes and so I used Salmon to perform quantification that can then be used downstream.
 
+```
+# source activate ngs
+# conda install salmon
+
+# For using Salmon we first need the transcriptome (r6.19 from flybase) and index it
+
+wget ftp://ftp.flybase.net/genomes/Drosophila_melanogaster/dmel_r6.19_FB2017_06/fasta/dmel-all-transcript-r6.19.fasta.gz
+
+salmon index -t dmel-all-transcript-r6.19.fasta.gz -i dmel-all-transcript-r6.19_salmon.index # really fast and can be done on the command line directly
+
+# Running the actual quantification 
+salmon quant -i dmel-all-transcript-r6.19_salmon.index -l A -r filename_trimmed.fq.gz -p 6 -o filename_salmon_quant
+
+# -l A: Automatically detect library type 
+# -r: Unmated or single-end reads
+# -p 6: multi-threading on 6 cores
+
+```
