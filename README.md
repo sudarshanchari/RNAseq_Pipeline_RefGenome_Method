@@ -103,3 +103,8 @@ library(org.Dm.eg.db)
 
 # Read in the gene conversion file 
 ttg <- read.table("~/Desktop/RNAseq_output/Abo_Wt_StagedNC_flybase_transcriptome/scripts_samples_ttg/flybase_transcript_to_gene.txt", h=T)
+
+```
+Transcript to gene names/ ID's can be added either during mapping or count matrix generation. Alternatively, the mapping can be obtained from the any of the specific model system databases. Here the mappings have been obtained directly from Flybase and used to generate gene-transcript mapping via tximport during DESeq2 SummerizedExperiment creation.
+
+```
