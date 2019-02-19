@@ -108,3 +108,45 @@ ttg <- read.table("~/Desktop/RNAseq_output/Abo_Wt_StagedNC_flybase_transcriptome
 Transcript to gene names/ ID's can be added either during mapping or count matrix generation. Alternatively, the mapping can be obtained from the any of the specific model system databases. Here the mappings have been obtained directly from Flybase and used to generate gene-transcript mapping via tximport during DESeq2 SummerizedExperiment creation.
 
 ```
+sample.nc14 <- read.csv("~/Desktop/samples_cell_cycle_14.csv", header = TRUE)
+str(sample.nc14)
+
+# Replicate, Lane and Sequencing batch number treated as factors
+sample.nc14$Replicate <- as.factor(sample.nc14$Replicate)  
+sample.nc14$Lane <- as.factor(sample.nc14$Lane)
+sample.nc14$Batch <- as.factor(sample.nc14$Batch)
+
+# Check the reference levels and set the base level as WT
+# I prefer all comparisons to the control or wild-type
+levels(sample.nc14$Genotype)
+sample.nc14$Genotype <- relevel(sample.nc14$Genotype, ref="WT")
+
+# Create a tximport object
+files.nc14 <- file.path("~/Desktop/desktop_01_19/RNAseq_output/Abo_Wt_StagedNC_flybase_transcriptome/data/salmon_data_by_nc", "NC14", sample.nc14$Sample, "quant.sf")		
+names(files.nc14) <- paste0("Sample", 1:24)
+all(file.exists(files.nc14))
+txi.nc14 <- tximport(files.nc14, type = "salmon", tx2gene = ttg)
+names(txi.nc14)
+rownames(sample.nc14) <- colnames(txi.nc14$counts) # if you have the sample names as row names in the samples.csv then this converts the row names to column names which holds all of the counts
+
+# Create a DESeq object from tximport object
+# Specify the design matrix appropriately to include Main effects and interactions where appropriate
+ddsTxi.nc14 <- DESeqDataSetFromTximport(txi.nc14, colData = sample.nc14, design = ~ Genotype)
+
+# There are technical replicates i.e. the same library sequenced multiple times and can be collapsed by summing up the reads
+# Before collapsing, check whether the technical replicates are different by performing a PCA and DE analysis between them
+# In this case the technical replicates are almost identical and hence collapsed
+ddsColl.nc14 <- collapseReplicates(ddsTxi.nc14, ddsTxi.nc14$Sample_by_Batch_Lane, ddsTxi.nc14$Sample_by_Batch_Lane)
+colData(ddsColl.nc14)
+keep.nc14 <- rowSums(counts(ddsColl.nc14) >1) >= 2 # this keeps genes with counts > 1 in at least 2 of the 6 samples
+ddsColl.nc14 <- ddsColl.nc14[keep.nc14,]
+ddsColl.nc14 # 7993 genes
+
+deseq.nc14 <- DESeq(ddsColl.nc14)
+hist(normalizationFactors(deseq.nc14))
+resultsNames(deseq.nc14)
+counts.nc14 <- as.data.frame(counts(deseq.nc14, normalized=T))
+counts.nc14 <- cbind(Gene = rownames(counts.nc14), counts.nc14)
+
+res.abo.nc14 <- results(deseq.nc14,name="Genotype_ABO_vs_WT",alpha=0.05)
+plotMA(res.abo.nc14)
