@@ -71,3 +71,35 @@ If you have used ERCC spike-ins then you can obtain the spike-in sequences (http
 cat dmel-all-transcript-r6.19.fasta ERCC92.fasta > dmel-all-transcript-r6.19_ERCC.fasta
 
 ```
+## Differential Gene Expression Analysis
+Following is a typical DESeq2 differential expression analysis pipeline for bulk RNA-seq adapted from http://bioconductor.org/packages/release/bioc/vignettes/DESeq2/inst/doc/DESeq2.html
+
+```
+# Install the required libraries from Bioconductor or relevant repositories and load them
+# For example 
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+BiocManager::install("DESeq2", version = "3.8")
+
+library(DESeq2)
+library(tximport)
+library(apeglm) 
+library(vsn)
+library(ggplot2)
+library(dplyr)
+library(pheatmap)
+library(RColorBrewer)
+library(genefilter)
+library(dendsort)
+library(sva)
+library(magrittr)
+library(matrixStats)
+library(metaRNASeq)
+library(reshape2)
+library(goseq)
+library(GO.db)
+library(TxDb.Dmelanogaster.UCSC.dm6.ensGene)
+library(org.Dm.eg.db)
+
+# Read in the gene conversion file 
+ttg <- read.table("~/Desktop/RNAseq_output/Abo_Wt_StagedNC_flybase_transcriptome/scripts_samples_ttg/flybase_transcript_to_gene.txt", h=T)
