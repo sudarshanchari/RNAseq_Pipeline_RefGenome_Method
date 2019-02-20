@@ -121,6 +121,7 @@ sample.nc14$Batch <- as.factor(sample.nc14$Batch)
 levels(sample.nc14$Genotype)
 sample.nc14$Genotype <- relevel(sample.nc14$Genotype, ref="WT")
 
+
 # Create a tximport object
 files.nc14 <- file.path("~/Desktop/desktop_01_19/RNAseq_output/Abo_Wt_StagedNC_flybase_transcriptome/data/salmon_data_by_nc", "NC14", sample.nc14$Sample, "quant.sf")		
 names(files.nc14) <- paste0("Sample", 1:24)
@@ -128,6 +129,7 @@ all(file.exists(files.nc14))
 txi.nc14 <- tximport(files.nc14, type = "salmon", tx2gene = ttg)
 names(txi.nc14)
 rownames(sample.nc14) <- colnames(txi.nc14$counts) # if you have the sample names as row names in the samples.csv then this converts the row names to column names which holds all of the counts
+
 
 # Create a DESeq object from tximport object
 # Specify the design matrix appropriately to include Main effects and interactions where appropriate
@@ -142,15 +144,56 @@ keep.nc14 <- rowSums(counts(ddsColl.nc14) >1) >= 2 # this keeps genes with count
 ddsColl.nc14 <- ddsColl.nc14[keep.nc14,]
 ddsColl.nc14 # 7993 genes
 
+
 # Run the DESeq2 normalization and analysis
 deseq.nc14 <- DESeq(ddsColl.nc14)
 hist(normalizationFactors(deseq.nc14)) # This should be centered around 1
 resultsNames(deseq.nc14)
 
-# Extract normalized counts
+# Extract normalized counts and save it as a dataframe
 counts.nc14 <- as.data.frame(counts(deseq.nc14, normalized=T))
 counts.nc14 <- cbind(Gene = rownames(counts.nc14), counts.nc14)
 
+
 # Extract the appropriate results and perform exploratory analysis
-res.abo.nc14 <- results(deseq.nc14,name="Genotype_Mutant_vs_WT",alpha=0.05)
-plotMA(res.abo.nc14)
+res.abo.nc14 <- results(deseq.nc14,name="Genotype_Mutant_vs_WT",alpha=0.05) # alpha value should be set at adjusted p-value threshold that you call significance at
+plotMA(res.abo.nc14, ylim=c(-4,4)) # MA plot
+
+res.abo.nc14.ape <- lfcShrink(deseq.nc14,coef=2,res= res.abo.nc14, type="apeglm") # log fold change shrinkage using apeglm 
+df.res.abo.nc14.ape <- as.data.frame(res.abo.nc14.ape)
+df.res.abo.nc14.ape <- cbind(Gene = rownames(df.res.abo.nc14.ape),df.res.abo.nc14.ape)
+plotMA(res.abo.nc14.ape, ylim=c(-4,4))
+
+
+res.abo.nc14.ord <- res.abo.nc14.ape[order(res.abo.nc14.ape $padj),]
+df.nc14 <- as.data.frame(res.abo.nc14.ord)
+df.nc14 <- cbind(Gene = rownames(df.nc14),df.nc14)
+
+dim(df.nc14) # total number of genes
+length(which(df.nc14$log2FoldChange>0)) # genes up-regulated
+length(which(df.nc14$log2FoldChange<0)) # genes down-regulated
+
+
+# Filter based on an FDR adjusted p-value threshold < 0.05
+res.abo.nc14.sig1 <- subset(res.abo.nc14.ord, padj < 0.05)
+df.nc14.sig1 <- as.data.frame(res.abo.nc14.sig1)
+df.nc14.sig1 <- cbind(Gene = rownames(df.nc14.sig1),df.nc14.sig1)
+
+dim(df.nc14.sig1)
+length(which(df.nc14.sig1$log2FoldChange>0)) 
+length(which(df.nc14.sig1$log2FoldChange<0))
+df.nc14.sig1.up <- subset(df.nc14.sig1, log2FoldChange>0)
+df.nc14.sig1.dn <- subset(df.nc14.sig1, log2FoldChange<0)
+
+# Filter based on a log2 fold-change threshold of 1 i.e. a 2 fold change
+res.abo.nc14.l2f <- subset(res.abo.nc14.ord, abs(log2FoldChange) > 1)
+df.nc14.l2f <- as.data.frame(res.abo.nc14.l2f)
+df.nc14.l2f <- cbind(Gene = rownames(df.nc14.l2f),df.nc14.l2f)
+
+dim(df.nc14.l2f) 
+length(which(df.nc14.l2f$log2FoldChange>1)) 
+length(which(df.nc14.l2f$log2FoldChange<-1))
+
+
+
+
