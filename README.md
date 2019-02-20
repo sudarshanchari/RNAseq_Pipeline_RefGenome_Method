@@ -142,11 +142,15 @@ keep.nc14 <- rowSums(counts(ddsColl.nc14) >1) >= 2 # this keeps genes with count
 ddsColl.nc14 <- ddsColl.nc14[keep.nc14,]
 ddsColl.nc14 # 7993 genes
 
+# Run the DESeq2 normalization and analysis
 deseq.nc14 <- DESeq(ddsColl.nc14)
-hist(normalizationFactors(deseq.nc14))
+hist(normalizationFactors(deseq.nc14)) # This should be centered around 1
 resultsNames(deseq.nc14)
+
+# Extract normalized counts
 counts.nc14 <- as.data.frame(counts(deseq.nc14, normalized=T))
 counts.nc14 <- cbind(Gene = rownames(counts.nc14), counts.nc14)
 
-res.abo.nc14 <- results(deseq.nc14,name="Genotype_ABO_vs_WT",alpha=0.05)
+# Extract the appropriate results and perform exploratory analysis
+res.abo.nc14 <- results(deseq.nc14,name="Genotype_Mutant_vs_WT",alpha=0.05)
 plotMA(res.abo.nc14)
