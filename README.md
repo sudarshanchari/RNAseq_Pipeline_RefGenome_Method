@@ -1,6 +1,6 @@
-RNAseq_Pipeline_Reference_Method
-================================
-This Repository contains scripts and a walk-through for analyzing pooled (single-end) RNA-seq performed on Drosophila melanogaster whole embryos with and without specific defects via 
+RNAseq Pipeline using a reference
+==================================
+This Repository contains a walk-through for analyzing pooled (single-end) RNA-seq performed on Drosophila melanogaster whole embryos with and without specific defects via 
 - mapping to a reference transcriptome using Salmon (slurm/bash scripts calling the relevant functions to preprocess and map)
 
 - performing differential gene expression (DE) analysis of single stage and time-series RNA-seq data that also touches upon p-value combination for multiple time-points (R workflow using Bioconductor packages)
