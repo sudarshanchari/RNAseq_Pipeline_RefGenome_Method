@@ -1,4 +1,4 @@
-RNAseq Pipeline using a reference
+RNA-seq Pipeline using a reference
 ==================================
 This Repository contains a walk-through for analyzing pooled (single-end) RNA-seq performed on Drosophila melanogaster whole embryos with and without specific defects via 
 - mapping to a reference transcriptome using Salmon (slurm/bash scripts calling the relevant functions to preprocess and map)
