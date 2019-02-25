@@ -134,10 +134,12 @@ rownames(sample.nc14) <- colnames(txi.nc14$counts) # if you have the sample name
 # Create a DESeq object from tximport object
 # Specify the design matrix appropriately to include Main effects and interactions where appropriate
 ddsTxi.nc14 <- DESeqDataSetFromTximport(txi.nc14, colData = sample.nc14, design = ~ Genotype)
+```
 
-# There are technical replicates i.e. the same library sequenced multiple times and can be collapsed by summing up the reads
-# Before collapsing, check whether the technical replicates are different by performing a PCA and DE analysis between them
-# In this case the technical replicates are almost identical and hence collapsed
+If there are technical replicates i.e. the same library sequenced multiple times and can be collapsed by summing up the reads. Before collapsing, check whether the technical replicates are different by performing a PCA and DE analysis just between them.  The ```collapseReplicates``` command can be used to do this where you can take the technical replicates (```run```) and collapse under say biological replicates (```groupby```).
+
+
+```
 ddsColl.nc14 <- collapseReplicates(ddsTxi.nc14, ddsTxi.nc14$Sample_by_Batch_Lane, ddsTxi.nc14$Sample_by_Batch_Lane)
 colData(ddsColl.nc14)
 keep.nc14 <- rowSums(counts(ddsColl.nc14) >1) >= 2 # this keeps genes with counts > 1 in at least 2 of the 6 samples
