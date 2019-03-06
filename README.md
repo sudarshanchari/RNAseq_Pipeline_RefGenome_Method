@@ -123,7 +123,7 @@ sample.nc14$Genotype <- relevel(sample.nc14$Genotype, ref="WT")
 
 
 # Create a tximport object
-files.nc14 <- file.path("~/Desktop/desktop_01_19/RNAseq_output/Abo_Wt_StagedNC_flybase_transcriptome/data/salmon_data_by_nc", "NC14", sample.nc14$Sample, "quant.sf")		
+files.nc14 <- file.path("~/Desktop/RNAseq_output/Abo_Wt_StagedNC_flybase_transcriptome/data/salmon_data_by_nc", "NC14", sample.nc14$Sample, "quant.sf")		
 names(files.nc14) <- paste0("Sample", 1:24)
 all(file.exists(files.nc14))
 txi.nc14 <- tximport(files.nc14, type = "salmon", tx2gene = ttg)
