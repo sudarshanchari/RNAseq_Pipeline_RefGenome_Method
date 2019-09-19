@@ -69,8 +69,3 @@ If you have used ERCC spike-ins then you can obtain the spike-in sequences (http
 
 ```
 cat dmel-all-transcript-r6.19.fasta ERCC92.fasta > dmel-all-transcript-r6.19_ERCC.fasta
-
-
-
-
-
